@@ -1,0 +1,47 @@
+sudo apt update
+sudo apt install apache2 -y
+sudo systemctl status apache2
+
+# 1. Create the new group
+sudo groupadd webmasters
+
+
+
+# 2. Create the new user and assign them to the webmasters group
+sudo useradd -m -g webmasters -s /bin/bash webuser
+
+
+
+# 3. Set a password for the new user
+sudo passwd webuser
+
+# 1. Change the group ownership of the web directory to 'webmasters'
+sudo chgrp -R webmasters /var/www/html
+
+
+# 2. Give read, write, and execute permissions to the owner and group
+sudo chmod -R 775 /var/www/html
+
+
+
+# 3. Set the GID bit so any new files created in this directory inherit the 'webmasters' group
+sudo chmod g+s /var/www/html
+
+
+
+# Switch to your new user
+su - webuser
+
+
+
+# Create a simple HTML page in the web directory
+echo "<h1>Hello World! My Apache site is live and secure.</h1>" > /var/www/html/index.html
+
+
+
+# Run this as a sudo user (exit from webuser first, or use a separate terminal)
+sudo ufw allow 'Apache'
+
+
+
+http://your_server_ip
